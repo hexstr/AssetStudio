@@ -616,11 +616,32 @@ namespace AssetStudio
 		}
 	}
 
+	public class ACLClip
+	{
+		public byte[] m_clipData;
+		public uint m_CurveCount;
+
+		public ACLClip(ObjectReader reader)
+		{
+			int num_clipData = reader.ReadInt32();
+			m_clipData = new byte[num_clipData];
+			for (int i = 0; i < num_clipData; i++)
+			{
+				m_clipData[i] = reader.ReadByte();
+			}
+			reader.AlignStream();
+
+			m_CurveCount = reader.ReadUInt32();
+		}
+
+	}
+
 	public class Clip
 	{
 		public StreamedClip m_StreamedClip;
 		public DenseClip m_DenseClip;
 		public ConstantClip m_ConstantClip;
+		public ACLClip m_aclClip;
 		public ValueArrayConstant m_Binding;
 
 		public Clip(ObjectReader reader)
@@ -632,6 +653,13 @@ namespace AssetStudio
 			{
 				m_ConstantClip = new ConstantClip(reader);
 			}
+
+			if (version[0] == 2017 && version[1] == 4 && version[2] == 18 && version[3] == 1 && version[4] == 2)
+			{
+				m_aclClip = new ACLClip(reader);
+				reader.AlignStream();
+			}
+
 			if (version[0] < 2018 || (version[0] == 2018 && version[1] < 3)) //2018.3 down
 			{
 				m_Binding = new ValueArrayConstant(reader);

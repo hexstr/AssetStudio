@@ -43,6 +43,10 @@ namespace AssetStudio
 					{
 						var m_DynamicOccludee = reader.ReadByte();
 					}
+					if (version[0] == 2017 && version[1] == 4 && version[2] == 18 && version[3] == 1 && version[4] == 2)
+					{
+						var m_AllowHalfResolution = reader.ReadByte();
+					}
 					if (version[0] >= 2021) //2021.1 and up
 					{
 						var m_StaticShadowCaster = reader.ReadByte();
@@ -149,6 +153,12 @@ namespace AssetStudio
 
 				//SInt16 m_SortingLayer 5.6 and up
 				var m_SortingOrder = reader.ReadInt16();
+				reader.AlignStream();
+			}
+
+			if (version[0] == 2017 && version[1] == 4 && version[2] == 18 && version[3] == 1 && version[4] == 2)
+			{
+				var m_UseHighestMip = reader.ReadByte();
 				reader.AlignStream();
 			}
 		}

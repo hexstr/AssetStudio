@@ -539,6 +539,12 @@ namespace AssetStudio
 						var m_StreamCompression = reader.ReadByte();
 					}
 					var m_IsReadable = reader.ReadBoolean();
+					if (version[0] == 2017 && version[1] == 4 && version[2] == 18 && version[3] == 1 && version[4] == 2)
+					{
+						var m_IsHighPrecisionPosition = reader.ReadBoolean();
+						var m_IsHighPrecisionTangent = reader.ReadBoolean();
+						var m_IsHighPrecisionUv = reader.ReadBoolean();
+					}
 					var m_KeepVertices = reader.ReadBoolean();
 					var m_KeepIndices = reader.ReadBoolean();
 				}
@@ -656,6 +662,12 @@ namespace AssetStudio
 				var m_BakedConvexCollisionMesh = reader.ReadUInt8Array();
 				reader.AlignStream();
 				var m_BakedTriangleCollisionMesh = reader.ReadUInt8Array();
+				reader.AlignStream();
+			}
+
+			if (version[0] == 2017 && version[1] == 4 && version[2] == 18 && version[3] == 1 && version[4] == 2)
+			{
+				var m_MetricsDirty = reader.ReadBoolean();
 				reader.AlignStream();
 			}
 

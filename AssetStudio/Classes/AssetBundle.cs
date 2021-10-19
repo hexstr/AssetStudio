@@ -23,6 +23,8 @@ namespace AssetStudio
 	{
 		public PPtr<Object>[] m_PreloadTable;
 		public KeyValuePair<string, AssetInfo>[] m_Container;
+		public string m_AssetBundleName;
+		public string[] m_Dependencies;
 
 		public AssetBundle(ObjectReader reader) : base(reader)
 		{
@@ -38,6 +40,15 @@ namespace AssetStudio
 			for (int i = 0; i < m_ContainerSize; i++)
 			{
 				m_Container[i] = new KeyValuePair<string, AssetInfo>(reader.ReadAlignedString(), new AssetInfo(reader));
+			}
+
+			reader.AlignStream();
+
+			if (version[0] == 2017 && version[1] == 4 && version[2] == 18 && version[3] == 1 && version[4] == 2)
+			{
+				m_AssetBundleName = reader.ReadAlignedString();
+				m_Dependencies = reader.ReadStringArray();
+				var m_Flags = reader.ReadInt32();
 			}
 		}
 	}

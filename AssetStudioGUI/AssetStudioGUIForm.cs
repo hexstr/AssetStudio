@@ -735,6 +735,9 @@ namespace AssetStudioGUI
 					case AnimationClip _:
 						StatusStripUpdate("Can be exported with Animator or Objects");
 						break;
+					case AssetBundle _:
+						PreviewAssetBundle(assetItem);
+						break;
 					default:
 						var str = assetItem.Asset.Dump();
 						if (str != null)
@@ -1186,6 +1189,66 @@ namespace AssetStudioGUI
 				previewPanel.BackgroundImageLayout = ImageLayout.Zoom;
 			else
 				previewPanel.BackgroundImageLayout = ImageLayout.Center;
+		}
+
+		private void PreviewAssetBundle(AssetItem assetItem)
+		{
+			string str = null;
+			var version = assetItem.Asset.version;
+			if (version[0] == 2017 && version[1] == 4 && version[2] == 18 && version[3] == 1 && version[4] == 2)
+			{
+				StringBuilder sb = new StringBuilder();
+				AssetBundle ab = (AssetBundle)assetItem.Asset;
+
+				sb.Append("m_Name = ");
+				sb.Append(ab.m_AssetBundleName);
+
+				sb.Append("\r\nm_Container size = ");
+				sb.Append(ab.m_Container.Length);
+				sb.Append("\r\n");
+
+				foreach (var container in ab.m_Container)
+				{
+					sb.Append("\tfirst = ");
+					sb.Append(container.Key);
+					sb.Append("\r\n");
+
+					sb.Append("\tsecond\r\n");
+					sb.Append("\t\tpreloadIndex = ");
+					sb.Append(container.Value.preloadIndex);
+					sb.Append("\r\n");
+					sb.Append("\t\tpreloadSize = ");
+					sb.Append(container.Value.preloadSize);
+					sb.Append("\r\n");
+
+					sb.Append("\t\tasset\r\n");
+					sb.Append("\t\t\tm_FileID = ");
+					sb.Append(container.Value.asset.m_FileID);
+					sb.Append("\r\n");
+					sb.Append("\t\t\tm_PathID = ");
+					sb.Append(container.Value.asset.m_PathID);
+					sb.Append("\r\n");
+				}
+
+				sb.Append("\r\nm_Dependencies\r\n");
+				foreach (var dependency in ab.m_Dependencies)
+				{
+					sb.Append("\t");
+					sb.Append(dependency);
+					sb.Append("\r\n");
+				}
+				str = sb.ToString();
+			}
+			else
+			{
+				str = assetItem.Asset.Dump();
+			}
+
+			if (str != null)
+			{
+				textPreviewBox.Text = str;
+				textPreviewBox.Visible = true;
+			}
 		}
 
 		private void PreviewText(string text)
