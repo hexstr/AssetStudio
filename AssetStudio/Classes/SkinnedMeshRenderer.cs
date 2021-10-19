@@ -15,8 +15,11 @@ namespace AssetStudio
 		{
 			int m_Quality = reader.ReadInt32();
 			var m_UpdateWhenOffscreen = reader.ReadBoolean();
-			var m_SkinNormals = reader.ReadBoolean(); //3.1.0 and below
-			reader.AlignStream();
+			if (version[0] >= 1 && version[1] >= 5 && version[0] <= 3 && version[1] <= 2) // 1.5 ~ 3.2
+			{
+				var m_SkinNormals = reader.ReadBoolean();
+			}
+			var m_SkinnedMotionVectors = reader.ReadBoolean(); reader.AlignStream();
 
 			if (version[0] == 2 && version[1] < 6) //2.6 down
 			{
@@ -35,6 +38,12 @@ namespace AssetStudio
 			{
 				m_BlendShapeWeights = reader.ReadSingleArray();
 			}
+
+			var m_RootBone = new PPtr<Transform>(reader);
+			var m_AABB = new AABB(reader);
+			var m_DirtyAABB = reader.ReadBoolean();
+
+			reader.AlignStream();
 		}
 	}
 }
